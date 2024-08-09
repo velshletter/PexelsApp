@@ -68,6 +68,25 @@ fun HomeScreen(
             onClearClick = { homeViewModel.clearSearchBar() }
         )
         Spacer(modifier = Modifier.size(12.dp))
+        if (featuredCollections.isNotEmpty()) {
+            Spacer(modifier = Modifier.size(12.dp))
+            LazyRow(
+                state = lazyCollectionsListState
+            ) {
+                item { Spacer(modifier = Modifier.size(24.dp)) }
+                items(featuredCollections) { collection ->
+                    CollectionItem(
+                        collection = collection,
+                        onClick = {
+                            homeViewModel.onCollectionClick(collectionId = collection.id)
+                        },
+                        isSelected = collection.id == selectedCollection
+                    )
+                }
+                item { Spacer(modifier = Modifier.size(12.dp)) }
+            }
+            Spacer(modifier = Modifier.size(8.dp))
+        }
         if (responseState is ResponseState.Loading) {
             LinearProgressIndicator(
                 modifier = Modifier
@@ -75,22 +94,6 @@ fun HomeScreen(
                     .height(4.dp),
             )
         } else Spacer(modifier = Modifier.size(4.dp))
-        Spacer(modifier = Modifier.size(8.dp))
-        LazyRow(
-            state = lazyCollectionsListState
-        ) {
-            item { Spacer(modifier = Modifier.size(24.dp)) }
-            items(featuredCollections) { collection ->
-                CollectionItem(
-                    collection = collection,
-                    onClick = {
-                        homeViewModel.onCollectionClick(collectionId = collection.id)
-                    },
-                    isSelected = collection.id == selectedCollection
-                )
-            }
-            item { Spacer(modifier = Modifier.size(12.dp)) }
-        }
         when {
             responseState is ResponseState.Error -> {
                 NetworkStub(onClick = { homeViewModel.retryRequest() })
@@ -107,7 +110,6 @@ fun HomeScreen(
             }
 
             else -> {
-                Spacer(modifier = Modifier.size(8.dp))
                 val density = LocalDensity.current
                 var width by remember { mutableStateOf(0.dp) }
                 LazyVerticalStaggeredGrid(
@@ -115,7 +117,7 @@ fun HomeScreen(
                     columns = StaggeredGridCells.Fixed(2),
                     verticalItemSpacing = 16.dp,
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(vertical = 16.dp, horizontal = 24.dp)
+                    contentPadding = PaddingValues(vertical = 12.dp, horizontal = 24.dp)
                 ) {
                     if (width == 0.dp) {
                         item {

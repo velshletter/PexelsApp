@@ -30,6 +30,8 @@ fun HomeGridItem(
     val request = remember {
         ImageRequest.Builder(context)
             .data(item.src.medium)
+            .placeholder(R.drawable.placeholder_foreground)
+            .error(R.drawable.placeholder_foreground)
             .crossfade(true)
             .build()
     }
@@ -44,7 +46,6 @@ fun HomeGridItem(
                 onClick()
             }
             .background(MaterialTheme.colorScheme.surfaceVariant),
-        placeholder = painterResource(id = R.drawable.placeholder_foreground),
         model = request,
         contentDescription = "",
         contentScale = ContentScale.FillWidth
